@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>fonts/Montserrat.ttf</file>
+        <file>fonts/Gilroy-Regular.ttf</file>
+    </qresource>
+</RCC>

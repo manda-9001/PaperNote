@@ -2,6 +2,8 @@
 #include "ui_mainwindow.h"
 
 #include <QFrame>
+#include <QVBoxLayout>
+#include <QPlainTextEdit>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -15,6 +17,8 @@ MainWindow::MainWindow(QWidget *parent)
     setCentralWidget(tabs);
 
     connect(tabs, SIGNAL(tabCloseRequested(int)), this, SLOT(closeTab(int)));
+
+    QFontDatabase::addApplicationFont(":/fonts/Gilroy-Regular.ttf");
 }
 
 MainWindow::~MainWindow()
@@ -23,8 +27,7 @@ MainWindow::~MainWindow()
 }
 void MainWindow::on_actionNew_file_triggered()
 {
-    QFrame *tabFrame = new QFrame(this);
-    tabs->addTab(tabFrame, "Untitled");
+    MainWindow::createTab();
 }
 
 
@@ -37,3 +40,18 @@ void MainWindow::closeTab(int index){
     tabs->removeTab(index);
 }
 
+void MainWindow::createTab(){
+    QFrame *tabFrame = new QFrame(this);
+    QVBoxLayout *tablayout = new QVBoxLayout(tabFrame);
+    QPlainTextEdit *fileedit = new QPlainTextEdit();
+
+    QFont font = fileedit->document()->defaultFont();
+    font.setFamily("Gilroy-Rgular");
+    fileedit->setFont(font);
+    fileedit->setTabStopDistance(QFontMetrics(fileedit->font()).horizontalAdvance(' ')*4);
+
+    tablayout->addWidget(fileedit);
+
+    int tab = tabs->addTab(tabFrame, "Untitled");
+    tabs->setCurrentIndex(tab);
+}

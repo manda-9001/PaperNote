@@ -26,6 +26,8 @@ private slots:
 
     void closeTab(int index);
 
+    void createTab();
+
 private:
     Ui::MainWindow *ui;
 
