@@ -19,6 +19,13 @@ public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow() override;
 
+private slots:
+    void on_actionNew_file_triggered();
+
+    void on_actionClose_file_triggered();
+
+    void closeTab(int index);
+
 private:
     Ui::MainWindow *ui;
 
