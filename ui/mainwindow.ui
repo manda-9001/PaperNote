@@ -29,6 +29,7 @@
     </property>
     <addaction name="actionNew_file"/>
     <addaction name="actionClose_file"/>
+    <addaction name="actionOpen_file"/>
    </widget>
    <addaction name="menuFile"/>
   </widget>
@@ -47,6 +48,14 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+X</string>
+   </property>
+  </action>
+  <action name="actionOpen_file">
+   <property name="text">
+    <string>Open file...</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+O</string>
    </property>
   </action>
  </widget>

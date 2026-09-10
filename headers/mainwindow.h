@@ -4,6 +4,13 @@
 #include <QMainWindow>
 #include <QTabWidget>
 #include <QLabel>
+#include <QFileDialog>
+#include <QFrame>
+#include <QVBoxLayout>
+#include <QPlainTextEdit>
+#include <QMessageBox>
+#include <QTextStream>
+#include <QList>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -27,6 +34,12 @@ private slots:
     void closeTab(int index);
 
     void createTab();
+
+    void on_actionOpen_file_triggered();
+
+    void openTabFile(QString filepath);
+
+    QPlainTextEdit* currentTextEdit();
 
 private:
     Ui::MainWindow *ui;
