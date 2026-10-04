@@ -107,7 +107,7 @@ void MainWindow::on_actionSave_triggered()
     QString fileName = tabs->tabText(tabs->currentIndex()),
             filepath = tabs->tabBar()->tabData(tabs->currentIndex()).toString();
 
-    if (fileName=="Untitled"){
+    if (fileName=="*Untitled" || fileName=="Untitled"){
         MainWindow::on_actionSave_as_triggered();
         return;
     }
@@ -130,6 +130,47 @@ void MainWindow::on_actionSave_triggered()
 
 void MainWindow::on_actionSave_as_triggered()
 {
+    QFileDialog dialog(this, "Save as");
+    dialog.setAcceptMode(QFileDialog::AcceptSave);
+    dialog.setOption(QFileDialog::DontUseNativeDialog, true);
+    dialog.setNameFilters({
+        "C Files (*.c)",
+        "C++ Files (*.cpp)",
+        "Headers Files (*.h)",
+        "Text Files (*.txt)",
+        "Python Files (*.py)",
+        "All Files (*)"
+    });
+    dialog.setDefaultSuffix("");
 
+    if (dialog.exec() != QDialog::Accepted) return;
+
+    QString filepath = dialog.selectedFiles().first(),
+        filter = dialog.selectedNameFilter();
+
+    if (QFileInfo(filepath).suffix().isEmpty()){
+        if (filter == "C Files (*.c)") filepath+=".c";
+        else if (filter == "C++ Files (*.cpp)") filepath+=".cpp";
+        else if (filter == "Headers Files (*.h)") filepath += ".h";
+        else if (filter == "Text Files (*.txt)") filepath += ".txt";
+        else if (filter == "Python Files (*.py)") filepath += ".py";
+    }
+
+    QFile file(filepath);
+
+    if (!file.open(QFile::WriteOnly | QFile::Text)){
+        QMessageBox::warning(this, "Warning", "Cannot save file"+file.errorString());
+        return;
+    }
+
+    QTextStream out(&file);
+
+    QString text = MainWindow::currentTextEdit()->toPlainText();
+    out << text;
+
+    file.close();
+
+    tabs->tabBar()->setTabData(tabs->currentIndex(), filepath);
+    tabs->setTabText(tabs->currentIndex(), QFileInfo(filepath).fileName());
 }
 
