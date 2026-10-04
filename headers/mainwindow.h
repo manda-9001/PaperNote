@@ -11,6 +11,8 @@
 #include <QMessageBox>
 #include <QTextStream>
 #include <QList>
+#include <QTabBar>
+
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -40,6 +42,12 @@ private slots:
     void openTabFile(QString filepath);
 
     QPlainTextEdit* currentTextEdit();
+
+    void textEditChanged();
+
+    void on_actionSave_triggered();
+
+    void on_actionSave_as_triggered();
 
 private:
     Ui::MainWindow *ui;

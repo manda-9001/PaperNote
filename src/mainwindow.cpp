@@ -5,6 +5,7 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
+    setWindowTitle("Papernote");
     ui->setupUi(this);
 
     tabs = new QTabWidget(this);
@@ -51,6 +52,10 @@ void MainWindow::createTab(){
 
     int tab = tabs->addTab(tabFrame, "Untitled");
     tabs->setCurrentIndex(tab);
+
+    tabs->setTabToolTip(tabs->currentIndex(), "Untitled");
+
+    connect(MainWindow::currentTextEdit(), SIGNAL(textChanged()), this, SLOT(textEditChanged()));
 }
 
 QPlainTextEdit* MainWindow::currentTextEdit(){
@@ -81,13 +86,50 @@ void MainWindow::openTabFile(QString filepath){
     file.close();
 
     tabs->setTabText(tabs->currentIndex(), name.fileName());
+    tabs->tabBar()->setTabData(tabs->currentIndex(), filepath);
 }
 
-void MainWindow::on_actionOpen_file_triggered()
-{
+void MainWindow::on_actionOpen_file_triggered(){
     QString filepath = QFileDialog::getOpenFileName(this, "Open file");
 
     MainWindow::createTab();
     MainWindow::openTabFile(filepath);
+
+}
+
+void MainWindow::textEditChanged(){
+    QString tabName = tabs->tabText(tabs->currentIndex());
+    if (tabName.at(0) != "*") tabs->setTabText(tabs->currentIndex(), "*"+tabName);
+}
+
+void MainWindow::on_actionSave_triggered()
+{
+    QString fileName = tabs->tabText(tabs->currentIndex()),
+            filepath = tabs->tabBar()->tabData(tabs->currentIndex()).toString();
+
+    if (fileName=="Untitled"){
+        MainWindow::on_actionSave_as_triggered();
+        return;
+    }
+    if (fileName.startsWith('*')) fileName.remove(0, 1);
+    QFile file(filepath);
+    if (!file.open(QFile::WriteOnly | QFile::Text)){
+        QMessageBox::warning(this, "Warning", "Cannot save file : "+ file.errorString());
+        return;
+}
+    QTextStream out(&file);
+    QString text = MainWindow::currentTextEdit()->toPlainText();
+    out << text;
+
+    file.close();
+
+    QString newTabText = tabs->tabText(tabs->currentIndex()).remove(0, 1);
+    tabs->setTabText(tabs->currentIndex(), newTabText);
+}
+
+
+void MainWindow::on_actionSave_as_triggered()
+{
+
 }
 
