@@ -11,7 +11,13 @@ MainWindow::MainWindow(QWidget *parent)
     tabs = new QTabWidget(this);
     tabs->setTabsClosable(true);
     tabs->setMovable(true);
-    setCentralWidget(tabs);
+    setCentralWidget(window);
+
+    treeview->setMaximumWidth(0);
+    treeview->setMidLineWidth(0);
+
+    window->addWidget(treeview);
+    window->addWidget(tabs);
 
     connect(tabs, SIGNAL(tabCloseRequested(int)), this, SLOT(closeTab(int)));
 
@@ -175,3 +181,14 @@ void MainWindow::StatUpdate(){
 
     MainWindow::currentStatus()->setText(newStatus);
 }
+
+void MainWindow::on_actionOpen_folder_triggered()
+{
+    QUrl dir = QFileDialog::getExistingDirectory(this, "Open folder", "/", QFileDialog::ShowDirsOnly);
+    dirModel->setRootPath(dir.toString());
+    treeview->setModel(dirModel);
+    treeview->setRootIndex(dirModel->index(dir.toString()));
+
+    treeview->setMinimumWidth(width() - 50);
+}
+

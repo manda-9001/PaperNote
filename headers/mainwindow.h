@@ -12,6 +12,9 @@
 #include <QTextStream>
 #include <QList>
 #include <QTabBar>
+#include <QTreeView>
+#include <QSplitter>
+#include <QFileSystemModel>
 
 
 QT_BEGIN_NAMESPACE
@@ -53,9 +56,17 @@ private slots:
 
     void StatUpdate();
 
+    void on_actionOpen_folder_triggered();
+
 private:
     Ui::MainWindow *ui;
 
     QTabWidget *tabs;
+
+    QTreeView *treeview = new QTreeView;
+
+    QSplitter *window = new QSplitter;
+
+    QFileSystemModel *dirModel = new QFileSystemModel;
 };
 #endif // MAINWINDOW_H
