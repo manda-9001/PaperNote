@@ -48,7 +48,13 @@ void MainWindow::createTab(){
     fileedit->setFont(font);
     fileedit->setTabStopDistance(QFontMetrics(fileedit->font()).horizontalAdvance(' ')*4);
 
+    QLabel *status = new QLabel(this);
+    status->setText("Line 1, Column 1");
+    status->setObjectName("status");
+
+
     tablayout->addWidget(fileedit);
+    tablayout->addWidget(status);
 
     int tab = tabs->addTab(tabFrame, "Untitled");
     tabs->setCurrentIndex(tab);
@@ -56,6 +62,7 @@ void MainWindow::createTab(){
     tabs->setTabToolTip(tabs->currentIndex(), "Untitled");
 
     connect(MainWindow::currentTextEdit(), SIGNAL(textChanged()), this, SLOT(textEditChanged()));
+    connect(MainWindow::currentTextEdit(), SIGNAL(cursorPositionChanged()), this, SLOT(StatUpdate()));
 }
 
 QPlainTextEdit* MainWindow::currentTextEdit(){
@@ -66,6 +73,15 @@ QPlainTextEdit* MainWindow::currentTextEdit(){
         }
     }
     return new QPlainTextEdit;
+}
+QLabel* MainWindow::currentStatus(){
+    QList<QLabel *> statusList = tabs->findChildren<QLabel *>("status");
+    for (int i=0; i<statusList.count(); ++i){
+        if (tabs->indexOf(statusList[i]->parentWidget()) == tabs->currentIndex()){
+            return statusList[i];
+        }
+    }
+    return new QLabel;
 }
 
 void MainWindow::openTabFile(QString filepath){
@@ -130,47 +146,32 @@ void MainWindow::on_actionSave_triggered()
 
 void MainWindow::on_actionSave_as_triggered()
 {
-    QFileDialog dialog(this, "Save as");
-    dialog.setAcceptMode(QFileDialog::AcceptSave);
-    dialog.setOption(QFileDialog::DontUseNativeDialog, true);
-    dialog.setNameFilters({
-        "C Files (*.c)",
-        "C++ Files (*.cpp)",
-        "Headers Files (*.h)",
-        "Text Files (*.txt)",
-        "Python Files (*.py)",
-        "All Files (*)"
-    });
-    dialog.setDefaultSuffix("");
-
-    if (dialog.exec() != QDialog::Accepted) return;
-
-    QString filepath = dialog.selectedFiles().first(),
-        filter = dialog.selectedNameFilter();
-
-    if (QFileInfo(filepath).suffix().isEmpty()){
-        if (filter == "C Files (*.c)") filepath+=".c";
-        else if (filter == "C++ Files (*.cpp)") filepath+=".cpp";
-        else if (filter == "Headers Files (*.h)") filepath += ".h";
-        else if (filter == "Text Files (*.txt)") filepath += ".txt";
-        else if (filter == "Python Files (*.py)") filepath += ".py";
+    if (tabs->count() == 0){
+        QMessageBox::warning(this, "Warning", "Cannot save file !");
+        return;
     }
 
+    QString filepath = QFileDialog::getSaveFileName(this, "Save As ...");
     QFile file(filepath);
 
     if (!file.open(QFile::WriteOnly | QFile::Text)){
-        QMessageBox::warning(this, "Warning", "Cannot save file"+file.errorString());
+        QMessageBox::warning(this, "Warning", "Cannot save file !"+file.errorString());
         return;
     }
 
     QTextStream out(&file);
-
-    QString text = MainWindow::currentTextEdit()->toPlainText();
-    out << text;
-
+    QString content = MainWindow::currentTextEdit()->toPlainText();
+    out << content;
     file.close();
 
-    tabs->tabBar()->setTabData(tabs->currentIndex(), filepath);
-    tabs->setTabText(tabs->currentIndex(), QFileInfo(filepath).fileName());
+    MainWindow::openTabFile(filepath);
 }
 
+void MainWindow::StatUpdate(){
+    QString row = QString::number(MainWindow::currentTextEdit()->textCursor().blockNumber()+1);
+    QString column = QString::number(MainWindow::currentTextEdit()->textCursor().columnNumber()+1);
+
+    QString newStatus = "Line "+row+",Column "+column;
+
+    MainWindow::currentStatus()->setText(newStatus);
+}

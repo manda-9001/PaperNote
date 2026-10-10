@@ -43,11 +43,15 @@ private slots:
 
     QPlainTextEdit* currentTextEdit();
 
+    QLabel* currentStatus();
+
     void textEditChanged();
 
     void on_actionSave_triggered();
 
     void on_actionSave_as_triggered();
+
+    void StatUpdate();
 
 private:
     Ui::MainWindow *ui;
