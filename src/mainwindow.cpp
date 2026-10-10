@@ -20,6 +20,7 @@ MainWindow::MainWindow(QWidget *parent)
     window->addWidget(tabs);
 
     connect(tabs, SIGNAL(tabCloseRequested(int)), this, SLOT(closeTab(int)));
+    connect(treeview, SIGNAL(clicked(QModelIndex)), this, SLOT(open_TreeViewFile(QModelIndex)));
 
     QFontDatabase::addApplicationFont(":/fonts/Montserrat.ttf");
 }
@@ -188,7 +189,17 @@ void MainWindow::on_actionOpen_folder_triggered()
     dirModel->setRootPath(dir.toString());
     treeview->setModel(dirModel);
     treeview->setRootIndex(dirModel->index(dir.toString()));
-
-    treeview->setMinimumWidth(width() - 50);
+    treeview->hideColumn(1);
+    treeview->hideColumn(2);
+    treeview->hideColumn(3);
+    treeview->setMinimumWidth(width()/5);
+    treeview->setMaximumWidth(width()/3);
 }
 
+void MainWindow::open_TreeViewFile(QModelIndex index){
+    MainWindow::createTab();
+
+    QString filepath = dirModel->fileInfo(index).absoluteFilePath();
+
+    MainWindow::openTabFile(filepath);
+}

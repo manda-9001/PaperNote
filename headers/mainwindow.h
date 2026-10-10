@@ -58,6 +58,8 @@ private slots:
 
     void on_actionOpen_folder_triggered();
 
+    void open_TreeViewFile(QModelIndex index);
+
 private:
     Ui::MainWindow *ui;
 
