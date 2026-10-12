@@ -1,1 +1,4 @@
 .qtcreator/
+debug/
+.git/
+.build-release/

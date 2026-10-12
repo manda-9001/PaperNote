@@ -3,5 +3,6 @@
         <file>fonts/Montserrat.ttf</file>
         <file>fonts/Gilroy-Regular.ttf</file>
         <file>fonts/JoyrideSTD.otf</file>
+	<file>icon/ico.png</file>
     </qresource>
 </RCC>

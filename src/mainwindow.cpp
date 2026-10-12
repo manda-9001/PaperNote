@@ -6,6 +6,7 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     setWindowTitle("Papernote");
+    setWindowIcon(QIcon(":icon/ico.png"));
     ui->setupUi(this);
 
     tabs = new QTabWidget(this);
@@ -56,7 +57,7 @@ void MainWindow::createTab(){
     fileedit->setTabStopDistance(QFontMetrics(fileedit->font()).horizontalAdvance(' ')*4);
 
     QLabel *status = new QLabel(this);
-    status->setText("Line 1, Column 1");
+    status->setText("Line 1,Column 1");
     status->setObjectName("status");
 
 
