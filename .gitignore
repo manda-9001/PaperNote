@@ -4,3 +4,4 @@ debug/
 .build-release/
 dist/
 build-release/
+.build-release/
